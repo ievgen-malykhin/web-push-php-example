@@ -1,6 +1,6 @@
 document.addEventListener('DOMContentLoaded', () => {
   const applicationServerKey =
-    'BMBlr6YznhYMX3NgcWIDRxZXs0sh7tCv7_YCsWcww0ZCv9WGg-tRCXfMEHTiBPCksSqeve1twlbmVAZFv7GSuj0';
+    'BDzEeyH3FpzBi70ulr6SSMoqtAvrWHen3klcrom1WQ_tTKPKgOfrUIXYWZzxH5TVu25RLeaw7MwOUWd7aljzCeU';
   let isPushEnabled = false;
 
   const pushButton = document.querySelector('#push-subscription-button');
@@ -241,7 +241,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const jsonSubscription = subscription.toJSON();
         fetch('send_push_notification.php', {
           method: 'POST',
-          body: JSON.stringify(Object.assign(jsonSubscription, { contentEncoding })),
+          // body: JSON.stringify(Object.assign(jsonSubscription, { contentEncoding })),
         });
       })
   );

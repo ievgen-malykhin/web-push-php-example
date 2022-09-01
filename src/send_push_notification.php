@@ -3,31 +3,33 @@ require __DIR__ . '/../vendor/autoload.php';
 use Minishlink\WebPush\WebPush;
 use Minishlink\WebPush\Subscription;
 
-// here I'll get the subscription endpoint in the POST parameters
-// but in reality, you'll get this information in your database
-// because you already stored it (cf. push_subscription.php)
-$subscription = Subscription::create(json_decode(file_get_contents('php://input'), true));
-
 $auth = array(
     'VAPID' => array(
-        'subject' => 'https://github.com/Minishlink/web-push-php-example/',
-        'publicKey' => file_get_contents(__DIR__ . '/../keys/public_key.txt'), // don't forget that your public key also lives in app.js
-        'privateKey' => file_get_contents(__DIR__ . '/../keys/private_key.txt'), // in the real world, this would be in a secret file
+        'subject' => 'https://spryker.com',
+        'publicKey' => 'BDzEeyH3FpzBi70ulr6SSMoqtAvrWHen3klcrom1WQ_tTKPKgOfrUIXYWZzxH5TVu25RLeaw7MwOUWd7aljzCeU', // don't forget that your public key also lives in app.js
+        'privateKey' => '4zgOiaiM0X2duaKA4GLWnLqJsB-3lTWL7znH73YsXYY', // in the real world, this would be in a secret file
     ),
 );
 
 $webPush = new WebPush($auth);
+$plainSubscriptions = json_decode(file_get_contents('src/php_local_storage.json'), true);
 
-$report = $webPush->sendOneNotification(
-    $subscription,
-    "Hello! 👋"
-);
+foreach ($plainSubscriptions as $plainSubscription) {
+    $subscription = Subscription::create($plainSubscription);
 
-// handle eventual errors here, and remove the subscription from your server if it is expired
-$endpoint = $report->getRequest()->getUri()->__toString();
-
-if ($report->isSuccess()) {
-    echo "[v] Message sent successfully for subscription {$endpoint}.";
-} else {
-    echo "[x] Message failed to sent for subscription {$endpoint}: {$report->getReason()}";
+    $webPush->queueNotification(
+        $subscription,
+        "Hello world via push notification rand-" . rand(0, 1000)
+    );
 }
+
+foreach ($webPush->flush() as $report) {
+    $endpoint = $report->getRequest()->getUri()->__toString();
+
+    if ($report->isSuccess()) {
+        echo "[v] Message sent successfully for subscription {$endpoint}.";
+    } else {
+        echo "[x] Message failed to sent for subscription {$endpoint}: {$report->getReason()}";
+    }
+}
+

@@ -10,13 +10,17 @@ $method = $_SERVER['REQUEST_METHOD'];
 
 switch ($method) {
     case 'POST':
-        // create a new subscription entry in your database (endpoint is unique)
+        $tempArray = json_decode(file_get_contents('src/php_local_storage.json'), true);
+        array_push($tempArray, $subscription);
+
+        $jsonData = json_encode($tempArray);
+        file_put_contents('src/php_local_storage.json', $jsonData);
         break;
     case 'PUT':
         // update the key and token of subscription corresponding to the endpoint
         break;
     case 'DELETE':
-        // delete the subscription corresponding to the endpoint
+        file_put_contents('src/php_local_storage.json', '[]');
         break;
     default:
         echo "Error: method not handled";
