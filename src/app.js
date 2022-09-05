@@ -204,7 +204,7 @@ document.addEventListener('DOMContentLoaded', () => {
   function push_sendSubscriptionToServer(subscription, method) {
     const key = subscription.getKey('p256dh');
     const token = subscription.getKey('auth');
-    const contentEncoding = (PushManager.supportedContentEncodings || ['aesgcm'])[0];
+    // const contentEncoding = (PushManager.supportedContentEncodings || ['aesgcm'])[0];
 
     return fetch('push_subscription.php', {
       method,
@@ -212,7 +212,7 @@ document.addEventListener('DOMContentLoaded', () => {
         endpoint: subscription.endpoint,
         publicKey: key ? btoa(String.fromCharCode.apply(null, new Uint8Array(key))) : null,
         authToken: token ? btoa(String.fromCharCode.apply(null, new Uint8Array(token))) : null,
-        contentEncoding,
+        // contentEncoding,
       }),
     }).then(() => subscription);
   }
